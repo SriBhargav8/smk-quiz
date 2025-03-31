@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function submitToGoogleSheets(data) {
     return new Promise((resolve, reject) => {
       // Google Apps Script Web App URL
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbzlt4OG5qRdUJAKUJpOwHMmkjIGjBnHrM9vKhh5u2o6ckcxX411n3v4-4fWlRPTlOzMkA/exec';
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzb1J1HPXrhW1kCFcMmqo8IoJOHhk4QphzFpwS3TUwF7qzHv1iwx1NySamN9Xl3jFdX/exec';
       
       // Create form data instead of JSON for better CORS compatibility
       const formData = new FormData();
