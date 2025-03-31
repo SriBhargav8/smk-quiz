@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Submit data to Google Sheets
   function submitToGoogleSheets(data) {
     // Google Apps Script Web App URL
-    const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_URL"
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzMR3txflmMWpKnqFGBACk12XkVEvsNb6rpzmgMyTy0wtFYf9XltQMsZrJ2k6JEZXc9UQ/exec"
 
     fetch(scriptURL, {
       method: "POST",
