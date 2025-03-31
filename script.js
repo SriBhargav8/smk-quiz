@@ -1,57 +1,57 @@
 document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
-  const formContainer = document.getElementById("form-container");
-  const quizContainer = document.getElementById("quiz-container");
-  const resultContainer = document.getElementById("result-container");
-  const leadForm = document.getElementById("lead-form");
-  const questionText = document.getElementById("question-text");
-  const optionsContainer = document.getElementById("options-container");
-  const correctAnswer = document.getElementById("correct-answer");
-  const wrongAnswer = document.getElementById("wrong-answer");
-  const overlay = document.getElementById("overlay");
-  const popup = document.getElementById("popup");
-  const popupContent = document.getElementById("popup-content");
-  const popupClose = document.getElementById("popup-close");
-  const loadingSpinner = document.getElementById("loading");
+  const formContainer = document.getElementById("form-container")
+  const quizContainer = document.getElementById("quiz-container")
+  const resultContainer = document.getElementById("result-container")
+  const leadForm = document.getElementById("lead-form")
+  const questionText = document.getElementById("question-text")
+  const optionsContainer = document.getElementById("options-container")
+  const correctAnswer = document.getElementById("correct-answer")
+  const wrongAnswer = document.getElementById("wrong-answer")
+  const overlay = document.getElementById("overlay")
+  const popup = document.getElementById("popup")
+  const popupContent = document.getElementById("popup-content")
+  const popupClose = document.getElementById("popup-close")
+  const loadingSpinner = document.getElementById("loading")
 
   // User data storage
-  let userData = {};
-  let currentQuestion = null;
+  let userData = {}
+  let currentQuestion = null
 
   // Make sure overlay is hidden initially
-  overlay.classList.add("hidden");
+  overlay.classList.add("hidden")
 
   // Check if user has already submitted the form - only after ensuring elements exist
   if (localStorage.getItem("quizSubmitted") === "true") {
-    showPopup("You have already participated in this quiz. Would you like to try again?", true);
-    return;
+    showPopup("You have already participated in this quiz. Would you like to try again?", true)
+    return
   } else {
     // Make sure form is visible
-    formContainer.classList.remove("hidden");
-    quizContainer.classList.add("hidden");
-    resultContainer.classList.add("hidden");
+    formContainer.classList.remove("hidden")
+    quizContainer.classList.add("hidden")
+    resultContainer.classList.add("hidden")
   }
 
   // Form submission
   leadForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     // Validate form
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const company = document.getElementById("company").value.trim();
+    const name = document.getElementById("name").value.trim()
+    const email = document.getElementById("email").value.trim()
+    const phone = document.getElementById("phone").value.trim()
+    const company = document.getElementById("company").value.trim()
 
     if (!name || !email || !phone || !company) {
-      showPopup("Please fill in all fields to continue.");
-      return;
+      showPopup("Please fill in all fields to continue.")
+      return
     }
 
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      showPopup("Please enter a valid email address.");
-      return;
+      showPopup("Please enter a valid email address.")
+      return
     }
 
     // Collect form data
@@ -62,16 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
       company: company,
       timestamp: new Date().toISOString(),
       result: "",
-    };
+    }
 
     // Hide form and show quiz with loading spinner
-    formContainer.classList.add("hidden");
-    quizContainer.classList.remove("hidden");
-    loadingSpinner.classList.remove("hidden");
+    formContainer.classList.add("hidden")
+    quizContainer.classList.remove("hidden")
+    loadingSpinner.classList.remove("hidden")
 
     // Load quiz question
-    loadQuizQuestion();
-  });
+    loadQuizQuestion()
+  })
 
   // Load quiz question from JSON file
   function loadQuizQuestion() {
@@ -129,164 +129,205 @@ document.addEventListener("DOMContentLoaded", () => {
           ],
           correctIndex: 2,
         },
-      ];
+      ]
 
       fetch("questions.json")
         .then((response) => {
           if (!response.ok) {
-            throw new Error("Failed to load questions.json");
+            throw new Error("Failed to load questions.json")
           }
-          return response.json();
+          return response.json()
         })
         .then((data) => {
-          displayQuestion(data);
+          displayQuestion(data)
         })
         .catch((error) => {
-          console.error("Error loading questions:", error);
+          console.error("Error loading questions:", error)
           // Use fallback questions if fetch fails
-          displayQuestion(fallbackQuestions);
-        });
-    }, 1000); // 1 second delay for loading effect
+          displayQuestion(fallbackQuestions)
+        })
+    }, 1000) // 1 second delay for loading effect
   }
 
   // Display question from data
   function displayQuestion(questions) {
     // Hide loading spinner
-    loadingSpinner.classList.add("hidden");
+    loadingSpinner.classList.add("hidden")
 
     // Get random question
-    const randomIndex = Math.floor(Math.random() * questions.length);
-    currentQuestion = questions[randomIndex];
+    const randomIndex = Math.floor(Math.random() * questions.length)
+    currentQuestion = questions[randomIndex]
 
     // Display question with animation
-    questionText.style.opacity = "0";
-    questionText.textContent = currentQuestion.question;
+    questionText.style.opacity = "0"
+    questionText.textContent = currentQuestion.question
 
     // Fade in question
     setTimeout(() => {
-      questionText.style.transition = "opacity 0.5s ease";
-      questionText.style.opacity = "1";
-    }, 100);
+      questionText.style.transition = "opacity 0.5s ease"
+      questionText.style.opacity = "1"
+    }, 100)
 
     // Clear previous options
-    optionsContainer.innerHTML = "";
+    optionsContainer.innerHTML = ""
 
     // Add options with staggered animation
     currentQuestion.options.forEach((option, index) => {
-      const optionButton = document.createElement("button");
-      optionButton.classList.add("option");
-      optionButton.textContent = option;
-      optionButton.dataset.index = index;
-      optionButton.style.opacity = "0";
-      optionButton.style.transform = "translateY(10px)";
+      const optionButton = document.createElement("button")
+      optionButton.classList.add("option")
+      optionButton.textContent = option
+      optionButton.dataset.index = index
+      optionButton.style.opacity = "0"
+      optionButton.style.transform = "translateY(10px)"
 
       optionButton.addEventListener("click", function () {
-        checkAnswer(Number.parseInt(this.dataset.index));
-      });
+        checkAnswer(Number.parseInt(this.dataset.index))
+      })
 
-      optionsContainer.appendChild(optionButton);
+      optionsContainer.appendChild(optionButton)
 
       // Staggered animation
       setTimeout(
         () => {
-          optionButton.style.transition = "opacity 0.3s ease, transform 0.3s ease";
-          optionButton.style.opacity = "1";
-          optionButton.style.transform = "translateY(0)";
+          optionButton.style.transition = "opacity 0.3s ease, transform 0.3s ease"
+          optionButton.style.opacity = "1"
+          optionButton.style.transform = "translateY(0)"
         },
-        150 + index * 100
-      );
-    });
+        150 + index * 100,
+      )
+    })
   }
 
   // Check user's answer
   function checkAnswer(selectedIndex) {
-    const isCorrect = selectedIndex === currentQuestion.correctIndex;
+    const isCorrect = selectedIndex === currentQuestion.correctIndex
 
     // Update user data with result
-    userData.result = isCorrect ? "Correct" : "Wrong";
+    userData.result = isCorrect ? "Correct" : "Wrong"
 
-    // Submit data to Google Sheets
-    submitToGoogleSheets(userData);
+    // Submit data to Google Sheets with error handling
+    submitToGoogleSheets(userData)
+      .then(() => {
+        console.log('Data submitted successfully');
+      })
+      .catch(error => {
+        console.error('Error submitting data:', error);
+        // Save data locally as fallback
+        saveDataLocally(userData);
+      })
+      .finally(() => {
+        // Show appropriate result regardless of submission success
+        showResult(isCorrect);
+      });
+  }
 
-    // Show appropriate result
-    quizContainer.classList.add("hidden");
-    resultContainer.classList.remove("hidden");
-
+  // Show result based on answer correctness
+  function showResult(isCorrect) {
+    quizContainer.classList.add('hidden');
+    resultContainer.classList.remove('hidden');
+    
     if (isCorrect) {
-      correctAnswer.classList.remove("hidden");
+      correctAnswer.classList.remove('hidden');
       // Start progress bar animation
-      const progressFill = document.querySelector(".progress-fill");
+      const progressFill = document.querySelector('.progress-fill');
       if (progressFill) {
-        progressFill.style.animation = "progress 3s linear forwards";
+        progressFill.style.animation = 'progress 3s linear forwards';
       }
       // Redirect to share page after 3 seconds
       setTimeout(() => {
-        window.location.href = "share.html";
+        window.location.href = 'share.html';
       }, 3000);
     } else {
-      wrongAnswer.classList.remove("hidden");
+      wrongAnswer.classList.remove('hidden');
     }
-
+    
     // Mark as submitted in localStorage
-    localStorage.setItem("quizSubmitted", "true");
-    localStorage.setItem("userData", JSON.stringify(userData));
+    localStorage.setItem('quizSubmitted', 'true');
+    localStorage.setItem('userData', JSON.stringify(userData));
   }
 
-  // Submit data to Google Sheets
+  // Submit data to Google Sheets with proper error handling
   function submitToGoogleSheets(data) {
-    // Google Apps Script Web App URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyC0ps6JWArTK-6ZNrvzm5qe3_bgVAMUrNDO1k6UThHNeWXdP0PV30H--U9mD3SC9q0RQ/exec";
-
-    fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        console.log("Success:", response);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        // Continue with the flow even if submission fails
+    return new Promise((resolve, reject) => {
+      // Google Apps Script Web App URL
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbyC0ps6JWArTK-6ZNrvzm5qe3_bgVAMUrNDO1k6UThHNeWXdP0PV30H--U9mD3SC9q0RQ/exec';
+      
+      // Create form data instead of JSON for better CORS compatibility
+      const formData = new FormData();
+      Object.keys(data).forEach(key => {
+        formData.append(key, data[key]);
       });
+      
+      // Try to submit with fetch
+      fetch(scriptURL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // This prevents CORS errors but makes response unreadable
+      })
+      .then(() => {
+        // Since we're using no-cors, we can't actually check the response
+        // We'll just assume it worked
+        resolve();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        reject(error);
+      });
+    });
+  }
+
+  // Save data locally as fallback when Google Sheets submission fails
+  function saveDataLocally(data) {
+    try {
+      // Get existing data or initialize empty array
+      const existingData = JSON.parse(localStorage.getItem('quizResponses') || '[]');
+      
+      // Add new data
+      existingData.push(data);
+      
+      // Save back to localStorage
+      localStorage.setItem('quizResponses', JSON.stringify(existingData));
+      
+      console.log('Data saved locally as fallback');
+    } catch (error) {
+      console.error('Error saving data locally:', error);
+    }
   }
 
   // Popup functionality
   function showPopup(message, isRetry = false) {
-    popupContent.textContent = message;
+    popupContent.textContent = message
 
     // If it's a retry popup, add a retry button
     if (isRetry) {
-      const retryButton = document.createElement("button");
-      retryButton.classList.add("btn-primary");
-      retryButton.style.marginTop = "15px";
-      retryButton.textContent = "Try Again";
+      const retryButton = document.createElement("button")
+      retryButton.classList.add("btn-primary")
+      retryButton.style.marginTop = "15px"
+      retryButton.textContent = "Try Again"
       retryButton.addEventListener("click", () => {
         // Clear localStorage and reload
-        localStorage.removeItem("quizSubmitted");
-        localStorage.removeItem("userData");
-        overlay.classList.add("hidden");
-        location.reload();
-      });
+        localStorage.removeItem("quizSubmitted")
+        localStorage.removeItem("userData")
+        overlay.classList.add("hidden")
+        location.reload()
+      })
 
-      popupContent.appendChild(document.createElement("br"));
-      popupContent.appendChild(document.createElement("br"));
-      popupContent.appendChild(retryButton);
+      popupContent.appendChild(document.createElement("br"))
+      popupContent.appendChild(document.createElement("br"))
+      popupContent.appendChild(retryButton)
     }
 
-    overlay.classList.remove("hidden");
+    overlay.classList.remove("hidden")
   }
 
   // Close popup when button is clicked
   popupClose.addEventListener("click", () => {
-    overlay.classList.add("hidden");
+    overlay.classList.add("hidden")
 
     // If user has already submitted and it's not a retry popup
     if (localStorage.getItem("quizSubmitted") === "true" && !popupContent.querySelector(".btn-primary")) {
       // Redirect to discount page as fallback
-      window.location.href = "discount.html";
+      window.location.href = "discount.html"
     }
-  });
-});
+  })
+})
