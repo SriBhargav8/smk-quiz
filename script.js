@@ -232,28 +232,30 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("userData", JSON.stringify(userData));
   }
 
-function submitToGoogleSheets(data) {
+// Submit data to PHP MySQL database
+function submitToPHP(data) {
   return new Promise((resolve, reject) => {
-    // Replace with your new deployed Google Apps Script Web App URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwINHrmql-CP7t8FfQA4xCBmvfW_DNZBIvSOIHaUOZIGTAH3hixZ0xsZ-JZkleUAdRjYg/exec";
-    
     const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key]);
-    });
-    
-    fetch(scriptURL, {
-      method: "POST",
-      body: formData
-      // Notice: No "mode: 'no-cors'" option
+    formData.append('name', data.name);
+    formData.append('email', data.email);
+    formData.append('phone', data.phone);
+    formData.append('company', data.company);
+    formData.append('result', data.result);
+
+    fetch('submit_data.php', {
+      method: 'POST',
+      body: formData,
     })
-      .then(response => response.json()) // Now you can read the JSON response
-      .then(data => {
-        console.log("Server Response:", data);
-        resolve();
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === 'success') {
+          resolve();
+        } else {
+          reject(new Error(data.message));
+        }
       })
-      .catch(error => {
-        console.error("Fetch error:", error);
+      .catch((error) => {
+        console.error('Error:', error);
         reject(error);
       });
   });
