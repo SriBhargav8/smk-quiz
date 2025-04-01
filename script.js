@@ -234,9 +234,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function submitToGoogleSheets(data) {
   return new Promise((resolve, reject) => {
-    // Use your correct deployed Google Apps Script URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxTK4LZi3jGqoR16A9Qv4vtCxfwYBLMd-vP2ByCpEe8j2CuvvuMM2KapucV9KffenhSQg/exec";
+    // Replace with your deployed Google Apps Script Web App URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbz7pqzhwwTWsa2_q-UzOE8Xkmyn0dGnok3UOuRRo926UybhDvxRyLwl61ikjpXJhkpdmg/exec";
     
+    // Create a FormData object from your data
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
@@ -245,9 +246,9 @@ function submitToGoogleSheets(data) {
     fetch(scriptURL, {
       method: "POST",
       body: formData
-      // No mode specified, so it defaults to "cors"
+      // No "mode: 'no-cors'" option here
     })
-      .then(response => response.json()) // Now you'll be able to read the response
+      .then(response => response.json()) // Now the response is readable
       .then(() => resolve())
       .catch(error => {
         console.error("Fetch error:", error);
