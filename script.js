@@ -232,33 +232,29 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("userData", JSON.stringify(userData));
   }
 
-  // Submit data to Google Sheets via Google Apps Script using FormData
-  function submitToGoogleSheets(data) {
-    return new Promise((resolve, reject) => {
-      // Replace with your deployed Google Apps Script Web App URL
-      const scriptURL = "https://script.google.com/macros/s/AKfycbw32U-lFN_bL4Xnfiec91Cel0dXVXwVYa2OyVqPuHNPyhKYOH3ckWcINf5BOpf6785agQ/exec";
-      
-      // Create a FormData object and append each data field
-      const formData = new FormData();
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
-      
-      fetch(scriptURL, {
-        method: "POST",
-        body: formData,
-        mode: "no-cors" // This prevents CORS errors but makes the response opaque
-      })
-      .then(() => {
-        // We assume success since no-cors doesn't let us read the response
-        resolve();
-      })
-      .catch((error) => {
+function submitToGoogleSheets(data) {
+  return new Promise((resolve, reject) => {
+    // Use your correct deployed Google Apps Script URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxTK4LZi3jGqoR16A9Qv4vtCxfwYBLMd-vP2ByCpEe8j2CuvvuMM2KapucV9KffenhSQg/exec";
+    
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+    
+    fetch(scriptURL, {
+      method: "POST",
+      body: formData
+      // No mode specified, so it defaults to "cors"
+    })
+      .then(response => response.json()) // Now you'll be able to read the response
+      .then(() => resolve())
+      .catch(error => {
         console.error("Fetch error:", error);
         reject(error);
       });
-    });
-  }
+  });
+}
 
   // Save data locally as a fallback when submission fails
   function saveDataLocally(data) {
