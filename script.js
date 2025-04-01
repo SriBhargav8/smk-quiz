@@ -187,25 +187,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Check user's answer and submit result
-  function checkAnswer(selectedIndex) {
-    const isCorrect = selectedIndex === currentQuestion.correctIndex;
-    userData.result = isCorrect ? "Correct" : "Wrong";
+  function checkAnswer(selectedAnswer) {
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        company: document.getElementById('company').value,
+        result: selectedAnswer === 'correct' ? 'Correct' : 'Wrong'  // Example result logic
+    };
 
-    // Submit data to Google Sheets and handle errors
-    submitToGoogleSheets(userData)
-      .then(() => {
-        console.log("Data submitted successfully");
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-        // Save data locally if submission fails
-        saveDataLocally(userData);
-      })
-      .finally(() => {
-        showResult(isCorrect);
-      });
-  }
+    submitToDatabase(formData);
+}
+
+function submitToDatabase(data) {
+    const formData = new FormData();
+    Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+    });
+
+    fetch('submit_data.php', {  // Correct PHP file path
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())  // Expecting a text response
+    .then(data => {
+        alert('Your response has been recorded!');
+    })
+    .catch(error => {
+        alert('Error: ' + error);
+    });
+}
 
   // Show result based on whether the answer is correct
   function showResult(isCorrect) {
