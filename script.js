@@ -234,10 +234,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function submitToGoogleSheets(data) {
   return new Promise((resolve, reject) => {
-    // Replace with your deployed Google Apps Script Web App URL
-    const scriptURL = "https://script.google.com/macros/s/AKfycbz7pqzhwwTWsa2_q-UzOE8Xkmyn0dGnok3UOuRRo926UybhDvxRyLwl61ikjpXJhkpdmg/exec";
+    // Replace with your new deployed Google Apps Script Web App URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwINHrmql-CP7t8FfQA4xCBmvfW_DNZBIvSOIHaUOZIGTAH3hixZ0xsZ-JZkleUAdRjYg/exec";
     
-    // Create a FormData object from your data
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
@@ -246,16 +245,20 @@ function submitToGoogleSheets(data) {
     fetch(scriptURL, {
       method: "POST",
       body: formData
-      // No "mode: 'no-cors'" option here
+      // Notice: No "mode: 'no-cors'" option
     })
-      .then(response => response.json()) // Now the response is readable
-      .then(() => resolve())
+      .then(response => response.json()) // Now you can read the JSON response
+      .then(data => {
+        console.log("Server Response:", data);
+        resolve();
+      })
       .catch(error => {
         console.error("Fetch error:", error);
         reject(error);
       });
   });
 }
+
 
   // Save data locally as a fallback when submission fails
   function saveDataLocally(data) {
